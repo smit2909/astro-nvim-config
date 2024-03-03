@@ -6,4 +6,12 @@ return {
 
   -- { import = "astrocommunity.colorscheme.catppuccin" },
   -- { import = "astrocommunity.completion.copilot-lua-cmp" },
+  { import = "astrocommunity.pack.typescript" },
+  { import = "astrocommunity.syntax.hlargs-nvim" },
+  { import = "astrocommunity.bars-and-lines.heirline-vscode-winbar" },
+  { import = "astrocommunity.bars-and-lines.heirline-mode-text-statusline" },
+  { import = "astrocommunity.color.transparent-nvim" },
+  { import = "astrocommunity.indent.mini-indentscope" },
+  { import = "astrocommunity.editing-support.rainbow-delimiters-nvim" },
+  { import = "astrocommunity.terminal-integration.flatten-nvim" },
 }

@@ -1,16 +1,16 @@
 return {
   -- Configure AstroNvim updates
   updater = {
-    remote = "origin", -- remote to use
-    channel = "stable", -- "stable" or "nightly"
-    version = "latest", -- "latest", tag name, or regex search like "v1.*" to only do updates before v2 (STABLE ONLY)
-    branch = "nightly", -- branch name (NIGHTLY ONLY)
-    commit = nil, -- commit hash (NIGHTLY ONLY)
-    pin_plugins = nil, -- nil, true, false (nil will pin plugins on stable only)
-    skip_prompts = false, -- skip prompts about breaking changes
+    remote = "origin",     -- remote to use
+    channel = "stable",    -- "stable" or "nightly"
+    version = "latest",    -- "latest", tag name, or regex search like "v1.*" to only do updates before v2 (STABLE ONLY)
+    branch = "nightly",    -- branch name (NIGHTLY ONLY)
+    commit = nil,          -- commit hash (NIGHTLY ONLY)
+    pin_plugins = nil,     -- nil, true, false (nil will pin plugins on stable only)
+    skip_prompts = false,  -- skip prompts about breaking changes
     show_changelog = true, -- show the changelog after performing an update
-    auto_quit = false, -- automatically quit the current session after a successful update
-    remotes = { -- easily add new remotes to track
+    auto_quit = false,     -- automatically quit the current session after a successful update
+    remotes = {            -- easily add new remotes to track
       --   ["remote_name"] = "https://remote_url.come/repo.git", -- full remote url
       --   ["remote2"] = "github_user/repo", -- GitHub user/repo shortcut,
       --   ["remote3"] = "github_user", -- GitHub user assume AstroNvim fork
@@ -18,25 +18,38 @@ return {
   },
 
   -- Set colorscheme to use
-  colorscheme = "astrodark",
+  colorscheme = "gruvbox-material",
 
   -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
   diagnostics = {
-    virtual_text = true,
+    virtual_text = false,
     underline = true,
   },
 
   lsp = {
     -- customize lsp formatting options
     formatting = {
+      filter = function(client)
+        -- disable formatting for lua_ls
+        if client.name == "lua_ls" then return false end
+        if client.name == "html" and vim.bo.filetype == "templ" then return false end
+        -- only enable null-ls for python files
+        if vim.bo.filetype == "python" then return client.name == "null-ls" end
+        if vim.bo.filetype == "javascript" then return client.name == "null-ls" end
+        if vim.bo.filetype == "typescript" then return client.name == "null-ls" end
+        if vim.bo.filetype == "typescriptreact" then return client.name == "null-ls" end
+        if vim.bo.filetype == "html" then return client.name == "null-ls" end
+        -- enable all other clients
+        return true
+      end,
       -- control auto formatting on save
       format_on_save = {
-        enabled = true, -- enable or disable format on save globally
+        enabled = true,     -- enable or disable format on save globally
         allow_filetypes = { -- enable format on save for specified filetypes only
           -- "go",
         },
         ignore_filetypes = { -- disable format on save for specified filetypes
-          -- "python",
+          "lua",
         },
       },
       disabled = { -- disable formatting capabilities for the listed language servers
@@ -51,6 +64,22 @@ return {
     -- enable servers that you already have installed without mason
     servers = {
       -- "pyright"
+    },
+    config = {
+      html = {
+        filetypes = { "html", "templ" },
+      },
+      gopls = {
+        analyses = {
+          unusedparams = true,
+          unusedvariable = true,
+        },
+        ui = {
+          semanticTokens = true,
+        },
+        staticcheck = true,
+        gofumpt = true,
+      },
     },
   },
 
@@ -81,5 +110,10 @@ return {
     --     ["~/%.config/foo/.*"] = "fooscript",
     --   },
     -- }
+    vim.filetype.add {
+      extension = {
+        templ = "templ",
+      },
+    }
   end,
 }
